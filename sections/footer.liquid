@@ -1,0 +1,669 @@
+
+<footer class="siq-luxury-footer" id="StyleiqFooter">
+  <!-- BRAND STATEMENT + NEWSLETTER -->
+  <div class="siq-footer-intro">
+    <div class="siq-footer-editorial">
+      <span class="siq-footer-eyebrow">THE ART OF PERSONAL STYLE</span>
+      <h2>Find your style.<br><em>Make it yours.</em></h2>
+      <p>Considered pieces. Effortless expression. A wardrobe that feels entirely your own.</p>
+      <a href="{{ routes.all_products_collection_url }}" class="siq-footer-discover">
+        Discover the collection <span>↗</span>
+      </a>
+    </div>
+
+    <div class="siq-footer-signup">
+      <span class="siq-footer-eyebrow">THE STYLEIQ LETTER</span>
+      <h3>A more personal<br>point of view.</h3>
+      <p>New collections, thoughtful edits and inspiration for dressing your way.</p>
+
+      {% form 'customer', class: 'siq-footer-form' %}
+        <input type="hidden" name="contact[tags]" value="newsletter">
+
+        <label class="siq-visually-hidden" for="SIQLuxuryEmail">
+          Email address
+        </label>
+
+        <div class="siq-footer-email">
+          <input
+            id="SIQLuxuryEmail"
+            type="email"
+            name="contact[email]"
+            value="{{ form.email }}"
+            placeholder="Enter your email address"
+            autocomplete="email"
+            autocorrect="off"
+            autocapitalize="off"
+            required
+          >
+          <button type="submit" aria-label="Subscribe to STYLEIQ">
+            Subscribe <span>↗</span>
+          </button>
+        </div>
+
+        {% if form.posted_successfully? %}
+          <p class="siq-footer-success" role="status">
+            Thank you. You're on the list.
+          </p>
+        {% endif %}
+
+        {% if form.errors %}
+          <div class="siq-footer-error" role="alert">
+            {{ form.errors | default_errors }}
+          </div>
+        {% endif %}
+      {% endform %}
+
+      <p class="siq-footer-privacy-note">
+        Occasional correspondence. No unnecessary noise.
+      </p>
+    </div>
+  </div>
+
+  <div class="siq-footer-rule"></div>
+
+  <!-- FOOTER LINKS -->
+  <div class="siq-footer-main">
+    <div class="siq-footer-identity">
+      <a
+        href="{{ routes.root_url }}"
+        class="siq-footer-logo-link"
+        aria-label="{{ shop.name | default: 'STYLEIQ' | escape }} home"
+      >
+        {% if section.settings.logo != blank %}
+          {{
+            section.settings.logo
+            | image_url: width: 600
+            | image_tag:
+              class: 'siq-footer-logo',
+              widths: '180,300,450,600',
+              loading: 'lazy',
+              alt: shop.name
+          }}
+        {% else %}
+          <img
+            class="siq-footer-logo"
+            src="{{ 'styleiq-logo.png' | asset_url }}"
+            alt="{{ shop.name | default: 'STYLEIQ' | escape }}"
+            width="420"
+            height="100"
+            loading="lazy"
+          >
+        {% endif %}
+      </a>
+
+      <p>Dress intuitively.</p>
+
+      <div class="siq-footer-socials">
+        {% if section.settings.instagram_url != blank %}
+          <a href="{{ section.settings.instagram_url }}" target="_blank" rel="noopener noreferrer">
+            Instagram <span>↗</span>
+          </a>
+        {% endif %}
+
+        {% if section.settings.pinterest_url != blank %}
+          <a href="{{ section.settings.pinterest_url }}" target="_blank" rel="noopener noreferrer">
+            Pinterest <span>↗</span>
+          </a>
+        {% endif %}
+
+        {% if section.settings.tiktok_url != blank %}
+          <a href="{{ section.settings.tiktok_url }}" target="_blank" rel="noopener noreferrer">
+            TikTok <span>↗</span>
+          </a>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="siq-footer-nav-column">
+      <h3>Discover</h3>
+      {% if section.settings.shop_menu != blank %}
+        {% for link in section.settings.shop_menu.links %}
+          <a href="{{ link.url }}">{{ link.title | escape }}</a>
+        {% endfor %}
+      {% else %}
+        <a href="{{ routes.all_products_collection_url }}">Shop all</a>
+        <a href="{{ routes.search_url }}">Search</a>
+      {% endif %}
+    </div>
+
+    <div class="siq-footer-nav-column">
+      <h3>Client services</h3>
+      {% if section.settings.help_menu != blank %}
+        {% for link in section.settings.help_menu.links %}
+          <a href="{{ link.url }}">{{ link.title | escape }}</a>
+        {% endfor %}
+      {% else %}
+        <a href="/pages/contact">Contact</a>
+        <a href="/pages/shipping-policy">Shipping</a>
+        <a href="/pages/returns">Returns & exchanges</a>
+      {% endif %}
+    </div>
+
+    <div class="siq-footer-nav-column">
+      <h3>Your account</h3>
+      {% if shop.customer_accounts_enabled %}
+        <a href="{{ routes.account_url }}">Sign in / Account</a>
+      {% endif %}
+      <a href="{{ routes.cart_url }}">Shopping bag ({{ cart.item_count }})</a>
+      {% if section.settings.stylist_url != blank %}
+        <a href="{{ section.settings.stylist_url }}">AI Stylist</a>
+      {% endif %}
+      <a href="{{ routes.all_products_collection_url }}">Explore the edit</a>
+    </div>
+  </div>
+
+  <!-- COPYRIGHT -->
+  <div class="siq-footer-bottom">
+    <span class="siq-footer-copyright">
+      © {{ 'now' | date: '%Y' }}
+      {{ shop.name | default: 'STYLEIQ' | escape }}. All rights reserved.
+    </span>
+
+    <div class="siq-footer-legal">
+      {% if shop.policies.privacy_policy != blank %}
+        <a href="{{ shop.policies.privacy_policy.url }}">Privacy</a>
+      {% endif %}
+      {% if shop.policies.terms_of_service != blank %}
+        <a href="{{ shop.policies.terms_of_service.url }}">Terms</a>
+      {% endif %}
+      {% if shop.policies.refund_policy != blank %}
+        <a href="{{ shop.policies.refund_policy.url }}">Refund policy</a>
+      {% endif %}
+    </div>
+
+    <a href="#MainContent" class="siq-footer-top-link">
+      Back to top ↑
+    </a>
+  </div>
+</footer>
+
+{% style %}
+  .siq-luxury-footer {
+    --siq-bg: #171715;
+    --siq-ivory: #f3f0e9;
+    --siq-muted: #aaa69d;
+    --siq-gold: #c6ad83;
+    --siq-line: rgba(243, 240, 233, .17);
+
+    background: var(--siq-bg);
+    color: var(--siq-ivory);
+    padding: 0 5.5%;
+    font-family: inherit;
+  }
+
+  .siq-luxury-footer *,
+  .siq-luxury-footer *::before,
+  .siq-luxury-footer *::after {
+    box-sizing: border-box;
+  }
+
+  .siq-luxury-footer a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .siq-footer-intro,
+  .siq-footer-main,
+  .siq-footer-bottom,
+  .siq-footer-rule {
+    width: 100%;
+    max-width: 1440px;
+    margin-right: auto;
+    margin-left: auto;
+  }
+
+  .siq-footer-intro {
+    display: grid;
+    grid-template-columns: 1.1fr .8fr;
+    gap: clamp(55px, 10vw, 160px);
+    padding-top: 90px;
+    padding-bottom: 82px;
+  }
+
+  .siq-footer-eyebrow {
+    display: block;
+    color: var(--siq-gold);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: .2em;
+    line-height: 1.8;
+    text-transform: uppercase;
+  }
+
+  .siq-footer-editorial h2 {
+    margin: 27px 0 22px;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: clamp(48px, 6.3vw, 84px);
+    font-weight: 400;
+    letter-spacing: -.055em;
+    line-height: .99;
+  }
+
+  .siq-footer-editorial h2 em {
+    color: var(--siq-gold);
+    font-weight: 400;
+  }
+
+  .siq-footer-editorial > p,
+  .siq-footer-signup > p {
+    color: var(--siq-muted);
+    font-size: 12px;
+    line-height: 1.9;
+  }
+
+  .siq-footer-editorial > p {
+    max-width: 370px;
+    margin: 0 0 28px;
+  }
+
+  .siq-footer-discover {
+    display: inline-flex;
+    align-items: center;
+    gap: 24px;
+    padding: 13px 0;
+    border-bottom: 1px solid var(--siq-gold);
+    font-size: 11px;
+    letter-spacing: .045em;
+    transition: gap .25s ease, color .25s ease;
+  }
+
+  .siq-footer-discover:hover {
+    gap: 32px;
+    color: var(--siq-gold);
+  }
+
+  .siq-footer-signup {
+    width: 100%;
+    max-width: 440px;
+    align-self: center;
+    justify-self: end;
+  }
+
+  .siq-footer-signup h3 {
+    margin: 20px 0 13px;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: clamp(30px, 3.4vw, 42px);
+    font-weight: 400;
+    letter-spacing: -.035em;
+    line-height: 1.12;
+  }
+
+  .siq-footer-signup > p {
+    max-width: 360px;
+    margin: 0 0 24px;
+  }
+
+  .siq-footer-email {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-height: 53px;
+    border-bottom: 1px solid #716d64;
+    transition: border-color .25s ease;
+  }
+
+  .siq-footer-email:focus-within {
+    border-color: var(--siq-gold);
+  }
+
+  .siq-footer-email input {
+    flex: 1;
+    min-width: 0;
+    min-height: 50px;
+    padding: 12px 0;
+    border: 0;
+    border-radius: 0;
+    outline: 0;
+    background: transparent;
+    color: var(--siq-ivory);
+    font-family: inherit;
+    font-size: 12px;
+    box-shadow: none;
+  }
+
+  .siq-footer-email input::placeholder {
+    color: var(--siq-muted);
+    opacity: 1;
+  }
+
+  .siq-footer-email button {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+    padding: 12px 0 12px 8px;
+    border: 0;
+    background: transparent;
+    color: var(--siq-gold);
+    font-family: inherit;
+    font-size: 11px;
+    cursor: pointer;
+  }
+
+  .siq-footer-email button:hover {
+    opacity: .75;
+  }
+
+  .siq-footer-signup .siq-footer-privacy-note {
+    margin-top: 13px;
+    margin-bottom: 0;
+    font-size: 10px;
+  }
+
+  .siq-footer-success,
+  .siq-footer-error {
+    margin: 12px 0 0;
+    font-size: 12px;
+    line-height: 1.7;
+  }
+
+  .siq-footer-success {
+    color: var(--siq-gold);
+  }
+
+  .siq-footer-error {
+    color: #f0b9ad;
+  }
+
+  .siq-footer-rule {
+    height: 1px;
+    background: var(--siq-line);
+  }
+
+  .siq-footer-main {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr 1fr;
+    gap: 42px;
+    padding-top: 55px;
+    padding-bottom: 60px;
+  }
+
+  .siq-footer-identity {
+    min-width: 0;
+  }
+
+  .siq-footer-logo-link {
+    display: inline-flex;
+    align-items: center;
+    max-width: 100%;
+    min-height: 40px;
+  }
+
+  .siq-footer-logo {
+    display: block;
+    width: {{ section.settings.footer_logo_width }}px;
+    max-width: 100%;
+    height: auto;
+    max-height: 65px;
+    object-fit: contain;
+    object-position: left center;
+  }
+
+  .siq-footer-identity > p {
+    margin: 17px 0 0;
+    color: var(--siq-muted);
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 15px;
+    font-style: italic;
+  }
+
+  .siq-footer-socials {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 17px;
+    margin-top: 25px;
+  }
+
+  .siq-footer-socials a {
+    color: var(--siq-muted);
+    font-size: 10px;
+    transition: color .2s ease;
+  }
+
+  .siq-footer-socials a span {
+    color: var(--siq-gold);
+  }
+
+  .siq-footer-socials a:hover {
+    color: var(--siq-ivory);
+  }
+
+  .siq-footer-nav-column h3 {
+    margin: 4px 0 22px;
+    color: var(--siq-ivory);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: .14em;
+    line-height: 1.7;
+    text-transform: uppercase;
+  }
+
+  .siq-footer-nav-column > a {
+    display: table;
+    max-width: 100%;
+    margin-bottom: 14px;
+    color: var(--siq-muted);
+    font-size: 11px;
+    line-height: 1.7;
+    transition: color .2s ease, transform .2s ease;
+  }
+
+  .siq-footer-nav-column > a:hover {
+    color: var(--siq-ivory);
+    transform: translateX(3px);
+  }
+
+  .siq-footer-bottom {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 24px;
+    min-height: 74px;
+    border-top: 1px solid var(--siq-line);
+    color: var(--siq-muted);
+    font-size: 10px;
+    line-height: 1.7;
+  }
+
+  .siq-footer-legal {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+  }
+
+  .siq-footer-bottom a {
+    transition: color .2s ease;
+  }
+
+  .siq-footer-bottom a:hover {
+    color: var(--siq-gold);
+  }
+
+  .siq-footer-top-link {
+    justify-self: end;
+    white-space: nowrap;
+  }
+
+  .siq-visually-hidden {
+    position: absolute !important;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  @media screen and (min-width: 1600px) {
+    .siq-luxury-footer {
+      padding-right: max(5.5%, calc((100% - 1440px) / 2));
+      padding-left: max(5.5%, calc((100% - 1440px) / 2));
+    }
+  }
+
+  @media screen and (max-width: 950px) {
+    .siq-footer-intro {
+      gap: 48px;
+    }
+
+    .siq-footer-main {
+      grid-template-columns: 1.2fr 1fr 1fr;
+      gap: 38px 28px;
+    }
+
+    .siq-footer-identity {
+      grid-column: 1 / -1;
+    }
+
+    .siq-footer-bottom {
+      grid-template-columns: 1fr auto;
+      padding: 19px 0;
+    }
+
+    .siq-footer-legal {
+      grid-row: 2;
+      grid-column: 1 / -1;
+      justify-content: flex-start;
+    }
+
+    .siq-footer-top-link {
+      grid-row: 1;
+      grid-column: 2;
+    }
+  }
+
+  @media screen and (max-width: 600px) {
+    .siq-luxury-footer {
+      padding-right: 22px;
+      padding-left: 22px;
+    }
+
+    .siq-footer-intro {
+      grid-template-columns: 1fr;
+      gap: 55px;
+      padding-top: 57px;
+      padding-bottom: 48px;
+    }
+
+    .siq-footer-editorial h2 {
+      margin-top: 22px;
+      font-size: clamp(45px, 12vw, 62px);
+    }
+
+    .siq-footer-signup {
+      justify-self: stretch;
+    }
+
+    .siq-footer-signup h3 {
+      font-size: 34px;
+    }
+
+    .siq-footer-main {
+      grid-template-columns: 1fr 1fr;
+      gap: 36px 20px;
+      padding-top: 40px;
+      padding-bottom: 38px;
+    }
+
+    .siq-footer-identity {
+      grid-column: 1 / -1;
+    }
+
+    .siq-footer-nav-column h3 {
+      margin-bottom: 18px;
+      font-size: 9px;
+      letter-spacing: .1em;
+    }
+
+    .siq-footer-nav-column > a {
+      margin-bottom: 12px;
+      font-size: 11px;
+    }
+
+    .siq-footer-bottom {
+      grid-template-columns: 1fr;
+      gap: 15px;
+      padding: 21px 0;
+    }
+
+    .siq-footer-legal {
+      grid-row: auto;
+      grid-column: auto;
+      justify-content: flex-start;
+      gap: 17px;
+    }
+
+    .siq-footer-top-link {
+      grid-row: auto;
+      grid-column: auto;
+      justify-self: start;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .siq-luxury-footer *,
+    .siq-luxury-footer *::before,
+    .siq-luxury-footer *::after {
+      scroll-behavior: auto !important;
+      transition: none !important;
+      animation: none !important;
+    }
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "STYLEIQ Luxury Footer",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Footer logo"
+    },
+    {
+      "type": "range",
+      "id": "footer_logo_width",
+      "label": "Logo width",
+      "min": 100,
+      "max": 320,
+      "step": 10,
+      "unit": "px",
+      "default": 190
+    },
+    {
+      "type": "link_list",
+      "id": "shop_menu",
+      "label": "Shop navigation",
+      "default": "main-menu"
+    },
+    {
+      "type": "link_list",
+      "id": "help_menu",
+      "label": "Customer care navigation"
+    },
+    {
+      "type": "url",
+      "id": "instagram_url",
+      "label": "Instagram profile"
+    },
+    {
+      "type": "url",
+      "id": "pinterest_url",
+      "label": "Pinterest profile"
+    },
+    {
+      "type": "url",
+      "id": "tiktok_url",
+      "label": "TikTok profile"
+    },
+    {
+      "type": "url",
+      "id": "stylist_url",
+      "label": "AI Stylist page"
+    }
+  ]
+}
+{% endschema %}

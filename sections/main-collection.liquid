@@ -1,0 +1,846 @@
+
+<div class="siq-collection-page">
+
+  <header class="siq-collection-heading">
+    <span class="siq-eyebrow">STYLEIQ / COLLECTIONS</span>
+
+    <h1>
+      {{ collection.title | escape }}
+    </h1>
+
+    {% if collection.description != blank %}
+      <div class="siq-collection-description rte">
+        {{ collection.description }}
+      </div>
+    {% endif %}
+
+    <div class="siq-heading-line"></div>
+  </header>
+
+  {% paginate collection.products by 12 %}
+
+    <div class="siq-collection-toolbar">
+      <p class="siq-product-count">
+        <strong>{{ collection.products_count }}</strong>
+        pieces to discover
+      </p>
+
+      <form
+        class="siq-sort-form"
+        method="get"
+        action="{{ collection.url }}"
+      >
+        {% for filter in collection.filters %}
+          {% if filter.type == 'list' or filter.type == 'boolean' %}
+            {% for value in filter.values %}
+              {% if value.active %}
+                <input
+                  type="hidden"
+                  name="{{ value.param_name }}"
+                  value="{{ value.value | escape }}"
+                >
+              {% endif %}
+            {% endfor %}
+          {% elsif filter.type == 'price_range' %}
+            {% if filter.min_value.value != blank %}
+              <input
+                type="hidden"
+                name="{{ filter.min_value.param_name }}"
+                value="{{ filter.min_value.value }}"
+              >
+            {% endif %}
+            {% if filter.max_value.value != blank %}
+              <input
+                type="hidden"
+                name="{{ filter.max_value.param_name }}"
+                value="{{ filter.max_value.value }}"
+              >
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+
+        <label for="SIQSortBy">Sort by</label>
+
+        {% assign sort_by = collection.sort_by | default: collection.default_sort_by %}
+
+        <select
+          id="SIQSortBy"
+          name="sort_by"
+          onchange="this.form.submit()"
+        >
+          {% for option in collection.sort_options %}
+            <option
+              value="{{ option.value }}"
+              {% if option.value == sort_by %}selected{% endif %}
+            >
+              {{ option.name | escape }}
+            </option>
+          {% endfor %}
+        </select>
+      </form>
+    </div>
+
+    <div class="siq-collection-layout">
+
+      <aside class="siq-filters" aria-label="Product filters">
+        <div class="siq-filter-heading">
+          <span>REFINE YOUR EDIT</span>
+          <span class="siq-filter-icon" aria-hidden="true">＋</span>
+        </div>
+
+        <form
+          id="SIQCollectionFilters"
+          action="{{ collection.url }}"
+          method="get"
+        >
+          <input
+            type="hidden"
+            name="sort_by"
+            value="{{ sort_by }}"
+          >
+
+          {% assign active_filter_count = 0 %}
+
+          {% for filter in collection.filters %}
+            {% for value in filter.values %}
+              {% if value.active %}
+                {% assign active_filter_count = active_filter_count | plus: 1 %}
+              {% endif %}
+            {% endfor %}
+
+            {% if filter.type == 'price_range' %}
+              {% if filter.min_value.value != blank %}
+                {% assign active_filter_count = active_filter_count | plus: 1 %}
+              {% endif %}
+              {% if filter.max_value.value != blank %}
+                {% assign active_filter_count = active_filter_count | plus: 1 %}
+              {% endif %}
+            {% endif %}
+          {% endfor %}
+
+          {% if active_filter_count > 0 %}
+            <div class="siq-active-filters">
+              <span>{{ active_filter_count }} active</span>
+              <a href="{{ collection.url }}?sort_by={{ sort_by | url_encode }}">
+                Clear all
+              </a>
+            </div>
+          {% endif %}
+
+          {% for filter in collection.filters %}
+            <details class="siq-filter-group" open>
+              <summary>
+                <span>{{ filter.label | escape }}</span>
+                <span class="siq-filter-chevron" aria-hidden="true">＋</span>
+              </summary>
+
+              <div class="siq-filter-options">
+
+                {% case filter.type %}
+
+                  {% when 'list' %}
+                    {% for value in filter.values %}
+                      <label
+                        class="siq-filter-value{% if value.count == 0 and value.active == false %} is-disabled{% endif %}"
+                      >
+                        <input
+                          type="checkbox"
+                          name="{{ value.param_name }}"
+                          value="{{ value.value | escape }}"
+                          {% if value.active %}checked{% endif %}
+                          {% if value.count == 0 and value.active == false %}disabled{% endif %}
+                        >
+
+                        <span class="siq-checkbox" aria-hidden="true"></span>
+
+                        <span class="siq-filter-label">
+                          {{ value.label | escape }}
+                        </span>
+
+                        <span class="siq-filter-count">
+                          {{ value.count }}
+                        </span>
+                      </label>
+                    {% endfor %}
+
+                  {% when 'boolean' %}
+                    {% for value in filter.values %}
+                      <label
+                        class="siq-filter-value{% if value.count == 0 and value.active == false %} is-disabled{% endif %}"
+                      >
+                        <input
+                          type="checkbox"
+                          name="{{ value.param_name }}"
+                          value="{{ value.value | escape }}"
+                          {% if value.active %}checked{% endif %}
+                          {% if value.count == 0 and value.active == false %}disabled{% endif %}
+                        >
+
+                        <span class="siq-checkbox" aria-hidden="true"></span>
+
+                        <span class="siq-filter-label">
+                          {{ value.label | escape }}
+                        </span>
+
+                        <span class="siq-filter-count">
+                          {{ value.count }}
+                        </span>
+                      </label>
+                    {% endfor %}
+
+                  {% when 'price_range' %}
+                    <p class="siq-price-note">
+                      The highest price is
+                      {{ filter.range_max | money }}
+                    </p>
+
+                    <div class="siq-price-fields">
+                      <label>
+                        <span>Minimum</span>
+                        <input
+                          type="number"
+                          name="{{ filter.min_value.param_name }}"
+                          min="0"
+                          max="{{ filter.range_max | divided_by: 100.0 }}"
+                          step="0.01"
+                          placeholder="0"
+                          {% if filter.min_value.value != blank %}
+                            value="{{ filter.min_value.value | divided_by: 100.0 }}"
+                          {% endif %}
+                        >
+                      </label>
+
+                      <label>
+                        <span>Maximum</span>
+                        <input
+                          type="number"
+                          name="{{ filter.max_value.param_name }}"
+                          min="0"
+                          max="{{ filter.range_max | divided_by: 100.0 }}"
+                          step="0.01"
+                          placeholder="{{ filter.range_max | divided_by: 100.0 }}"
+                          {% if filter.max_value.value != blank %}
+                            value="{{ filter.max_value.value | divided_by: 100.0 }}"
+                          {% endif %}
+                        >
+                      </label>
+                    </div>
+
+                {% endcase %}
+              </div>
+            </details>
+          {% endfor %}
+
+          {% if collection.filters.size > 0 %}
+            <button class="siq-apply-filters" type="submit">
+              Apply filters <span aria-hidden="true">→</span>
+            </button>
+
+            <a
+              class="siq-clear-filters"
+              href="{{ collection.url }}?sort_by={{ sort_by | url_encode }}"
+            >
+              Clear all filters
+            </a>
+          {% else %}
+            <p class="siq-no-filters">
+              Filters will appear here when your store has filter options configured.
+            </p>
+          {% endif %}
+        </form>
+      </aside>
+
+      <main class="siq-collection-products">
+        <div class="siq-results-heading">
+          <span>THE COLLECTION</span>
+          <span>
+            {{ paginate.current_offset | plus: 1 }}–{{ paginate.current_offset | plus: collection.products.size }}
+            of {{ collection.products_count }}
+          </span>
+        </div>
+
+        <div class="product-grid siq-collection-grid">
+          {% for product in collection.products %}
+            {% render 'product-card', product: product %}
+          {% else %}
+            <div class="siq-empty-collection">
+              <span class="siq-eyebrow">NOTHING HERE JUST YET</span>
+              <h2>No pieces found.</h2>
+              <p>Try adjusting your filters to discover more of the collection.</p>
+              <a class="siq-apply-filters" href="{{ collection.url }}">
+                Explore all pieces →
+              </a>
+            </div>
+          {% endfor %}
+        </div>
+
+        {% if paginate.pages > 1 %}
+          <nav class="siq-pagination" aria-label="Pagination">
+            {% if paginate.previous %}
+              <a href="{{ paginate.previous.url }}" rel="prev">
+                ← Previous
+              </a>
+            {% else %}
+              <span class="is-disabled">← Previous</span>
+            {% endif %}
+
+            <span class="siq-page-number">
+              Page {{ paginate.current_page }} of {{ paginate.pages }}
+            </span>
+
+            {% if paginate.next %}
+              <a href="{{ paginate.next.url }}" rel="next">
+                Next →
+              </a>
+            {% else %}
+              <span class="is-disabled">Next →</span>
+            {% endif %}
+          </nav>
+        {% endif %}
+      </main>
+    </div>
+  {% endpaginate %}
+</div>
+
+{% style %}
+  .siq-collection-page {
+    --siq-ink: #171714;
+    --siq-muted: #706b63;
+    --siq-gold: #b89449;
+    --siq-line: #e5dfd4;
+    --siq-paper: #f8f6f1;
+    --siq-white: #fffefa;
+
+    background: var(--siq-paper);
+    color: var(--siq-ink);
+    min-height: 70vh;
+    padding-bottom: 90px;
+  }
+
+  .siq-collection-page *,
+  .siq-collection-page *::before,
+  .siq-collection-page *::after {
+    box-sizing: border-box;
+  }
+
+  .siq-collection-heading {
+    position: relative;
+    padding: clamp(64px, 8vw, 112px) 24px 58px;
+    text-align: center;
+    background: var(--siq-white);
+    border-bottom: 1px solid var(--siq-line);
+  }
+
+  .siq-eyebrow {
+    display: block;
+    color: var(--siq-gold);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: .24em;
+    line-height: 1.8;
+    text-transform: uppercase;
+  }
+
+  .siq-collection-heading h1 {
+    margin: 17px 0 0;
+    color: var(--siq-ink);
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: clamp(44px, 6vw, 76px);
+    font-weight: 400;
+    letter-spacing: -.055em;
+    line-height: 1.08;
+  }
+
+  .siq-collection-description {
+    max-width: 650px;
+    margin: 20px auto 0;
+    color: var(--siq-muted);
+    font-size: 14px;
+    line-height: 1.9;
+  }
+
+  .siq-heading-line {
+    width: 44px;
+    height: 1px;
+    margin: 28px auto 0;
+    background: var(--siq-gold);
+  }
+
+  .siq-collection-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 20px clamp(20px, 5.2vw, 80px);
+    border-bottom: 1px solid var(--siq-line);
+    background: var(--siq-paper);
+  }
+
+  .siq-product-count {
+    margin: 0;
+    color: var(--siq-muted);
+    font-size: 12px;
+    letter-spacing: .025em;
+  }
+
+  .siq-product-count strong {
+    color: var(--siq-ink);
+    font-weight: 600;
+  }
+
+  .siq-sort-form {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .siq-sort-form label {
+    color: var(--siq-muted);
+    font-size: 12px;
+    white-space: nowrap;
+  }
+
+  .siq-sort-form select {
+    min-width: 185px;
+    min-height: 46px;
+    padding: 0 36px 0 14px;
+    border: 1px solid var(--siq-line);
+    border-radius: 0;
+    background-color: var(--siq-white);
+    color: var(--siq-ink);
+    font: inherit;
+    font-size: 12px;
+    cursor: pointer;
+  }
+
+  .siq-collection-layout {
+    display: grid;
+    grid-template-columns: minmax(190px, 230px) minmax(0, 1fr);
+    align-items: start;
+    gap: clamp(26px, 4vw, 64px);
+    padding: 48px clamp(20px, 5.2vw, 80px) 0;
+  }
+
+  .siq-filters {
+    min-width: 0;
+    padding: 0 0 28px;
+    border-right: 1px solid var(--siq-line);
+    padding-right: 24px;
+  }
+
+  .siq-filter-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 0 22px;
+    color: var(--siq-ink);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: .16em;
+  }
+
+  .siq-filter-icon {
+    color: var(--siq-gold);
+    font-size: 18px;
+  }
+
+  .siq-active-filters {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 0;
+    border-top: 1px solid var(--siq-line);
+    color: var(--siq-muted);
+    font-size: 11px;
+  }
+
+  .siq-active-filters a,
+  .siq-clear-filters {
+    color: var(--siq-ink);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .siq-filter-group {
+    border-top: 1px solid var(--siq-line);
+  }
+
+  .siq-filter-group:last-of-type {
+    border-bottom: 1px solid var(--siq-line);
+  }
+
+  .siq-filter-group summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 18px 0;
+    color: var(--siq-ink);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .siq-filter-group summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .siq-filter-chevron {
+    color: var(--siq-gold);
+    font-size: 15px;
+    transition: transform .2s ease;
+  }
+
+  .siq-filter-group[open] .siq-filter-chevron {
+    transform: rotate(45deg);
+  }
+
+  .siq-filter-options {
+    display: grid;
+    gap: 15px;
+    padding: 0 0 20px;
+  }
+
+  .siq-filter-value {
+    display: grid;
+    grid-template-columns: 15px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 10px;
+    color: var(--siq-muted);
+    font-size: 12px;
+    line-height: 1.5;
+    cursor: pointer;
+  }
+
+  .siq-filter-value input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .siq-checkbox {
+    display: grid;
+    width: 14px;
+    height: 14px;
+    place-items: center;
+    border: 1px solid #c7c0b4;
+    background: var(--siq-white);
+    transition: background .2s ease, border-color .2s ease;
+  }
+
+  .siq-filter-value input:checked + .siq-checkbox {
+    border-color: var(--siq-ink);
+    background: var(--siq-ink);
+  }
+
+  .siq-filter-value input:checked + .siq-checkbox::after {
+    content: '✓';
+    color: #fff;
+    font-size: 10px;
+  }
+
+  .siq-filter-value input:focus-visible + .siq-checkbox {
+    outline: 2px solid var(--siq-gold);
+    outline-offset: 3px;
+  }
+
+  .siq-filter-value:has(input:checked) .siq-filter-label {
+    color: var(--siq-ink);
+  }
+
+  .siq-filter-value.is-disabled {
+    opacity: .4;
+    cursor: not-allowed;
+  }
+
+  .siq-filter-count {
+    color: #8b857a;
+    font-size: 10px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .siq-price-note {
+    margin: 0;
+    color: var(--siq-muted);
+    font-size: 11px;
+    line-height: 1.6;
+  }
+
+  .siq-price-fields {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 9px;
+  }
+
+  .siq-price-fields label {
+    display: grid;
+    gap: 7px;
+    color: var(--siq-muted);
+    font-size: 10px;
+  }
+
+  .siq-price-fields input {
+    width: 100%;
+    min-width: 0;
+    min-height: 42px;
+    padding: 0 9px;
+    border: 1px solid var(--siq-line);
+    border-radius: 0;
+    background: var(--siq-white);
+    color: var(--siq-ink);
+    font: inherit;
+    font-size: 12px;
+  }
+
+  .siq-apply-filters {
+    display: flex;
+    width: 100%;
+    min-height: 47px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 24px;
+    padding: 0 15px;
+    border: 1px solid var(--siq-ink);
+    border-radius: 0;
+    background: var(--siq-ink);
+    color: #fff;
+    font: inherit;
+    font-size: 12px;
+    text-align: left;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background .2s ease, color .2s ease;
+  }
+
+  .siq-apply-filters:hover {
+    background: var(--siq-gold);
+    border-color: var(--siq-gold);
+    color: #171714;
+  }
+
+  .siq-clear-filters {
+    display: block;
+    margin-top: 17px;
+    color: var(--siq-muted);
+    font-size: 11px;
+    text-align: center;
+  }
+
+  .siq-no-filters {
+    color: var(--siq-muted);
+    font-size: 12px;
+    line-height: 1.8;
+  }
+
+  .siq-collection-products {
+    min-width: 0;
+  }
+
+  .siq-results-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin: 0 0 22px;
+    color: var(--siq-muted);
+    font-size: 10px;
+    letter-spacing: .12em;
+  }
+
+  .siq-results-heading span:first-child {
+    color: var(--siq-gold);
+    font-weight: 600;
+  }
+
+  .siq-results-heading span:last-child {
+    letter-spacing: .025em;
+  }
+
+  .siq-collection-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-items: start;
+    gap: 34px 22px;
+  }
+
+  .siq-collection-grid > * {
+    min-width: 0;
+  }
+
+  .siq-empty-collection {
+    grid-column: 1 / -1;
+    padding: 80px 24px;
+    border: 1px solid var(--siq-line);
+    background: var(--siq-white);
+    text-align: center;
+  }
+
+  .siq-empty-collection h2 {
+    margin: 16px 0;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: clamp(30px, 4vw, 46px);
+    font-weight: 400;
+  }
+
+  .siq-empty-collection p {
+    color: var(--siq-muted);
+    font-size: 13px;
+  }
+
+  .siq-empty-collection .siq-apply-filters {
+    width: auto;
+    display: inline-flex;
+    margin-top: 24px;
+  }
+
+  .siq-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    margin-top: 55px;
+    padding-top: 24px;
+    border-top: 1px solid var(--siq-line);
+    font-size: 12px;
+  }
+
+  .siq-pagination a {
+    color: var(--siq-ink);
+    text-decoration: none;
+  }
+
+  .siq-pagination a:hover {
+    color: var(--siq-gold);
+  }
+
+  .siq-pagination .is-disabled {
+    color: #a7a094;
+  }
+
+  .siq-page-number {
+    color: var(--siq-muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .siq-collection-page button:focus-visible,
+  .siq-collection-page a:focus-visible,
+  .siq-collection-page select:focus-visible,
+  .siq-collection-page input:focus-visible {
+    outline: 2px solid var(--siq-gold);
+    outline-offset: 3px;
+  }
+
+  @media (min-width: 1500px) {
+    .siq-collection-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 36px 24px;
+    }
+  }
+
+  @media (max-width: 1100px) {
+    .siq-collection-layout {
+      grid-template-columns: 190px minmax(0, 1fr);
+      gap: 25px;
+      padding-right: 28px;
+      padding-left: 28px;
+    }
+
+    .siq-filters {
+      padding-right: 18px;
+    }
+
+    .siq-collection-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 28px 18px;
+    }
+  }
+
+  @media (max-width: 700px) {
+    .siq-collection-page {
+      padding-bottom: 55px;
+    }
+
+    .siq-collection-heading {
+      padding: 54px 20px 38px;
+    }
+
+    .siq-collection-heading h1 {
+      font-size: clamp(39px, 11vw, 55px);
+    }
+
+    .siq-collection-toolbar {
+      align-items: flex-start;
+      flex-direction: column;
+      gap: 15px;
+      padding: 18px 20px;
+    }
+
+    .siq-sort-form {
+      width: 100%;
+      justify-content: space-between;
+    }
+
+    .siq-sort-form select {
+      flex: 1;
+      min-width: 0;
+      max-width: 240px;
+    }
+
+    .siq-collection-layout {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 28px;
+      padding: 25px 16px 0;
+    }
+
+    .siq-filters {
+      padding: 0 0 20px;
+      border-right: 0;
+      border-bottom: 1px solid var(--siq-line);
+    }
+
+    .siq-filter-heading {
+      padding-bottom: 15px;
+    }
+
+    .siq-filter-group summary {
+      padding: 15px 0;
+    }
+
+    .siq-filter-options {
+      padding-bottom: 18px;
+    }
+
+    .siq-collection-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 24px 12px;
+    }
+
+    .siq-results-heading {
+      margin-bottom: 16px;
+      font-size: 9px;
+    }
+
+    .siq-pagination {
+      margin-top: 35px;
+      font-size: 11px;
+    }
+  }
+
+  @media (max-width: 360px) {
+    .siq-collection-grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Main collection",
+  "settings": []
+}
+{% endschema %}

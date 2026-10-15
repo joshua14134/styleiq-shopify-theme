@@ -1,0 +1,360 @@
+
+<header class="site-header" data-site-header>
+  <button
+    class="mobile-menu"
+    type="button"
+    data-menu-toggle
+    aria-label="Open menu"
+    aria-expanded="false"
+    aria-controls="StyleiqMainMenu"
+  >
+    <span></span>
+    <span></span>
+  </button>
+
+  <!-- LOCAL STYLEIQ LOGO -->
+  <a
+    class="brand brand-image"
+    href="{{ routes.root_url }}"
+    aria-label="{{ shop.name | default: 'STYLEIQ' | escape }} home"
+  >
+    {% if section.settings.logo != blank %}
+      {{
+        section.settings.logo
+        | image_url: width: 700
+        | image_tag:
+          class: 'brand-logo',
+          widths: '200,300,420,600,700',
+          alt: shop.name,
+          fetchpriority: 'high'
+      }}
+    {% else %}
+      <img
+        src="{{ 'styleiq-logo.png' | asset_url }}"
+        alt="{{ shop.name | default: 'STYLEIQ' | escape }}"
+        class="brand-logo"
+        width="420"
+        height="100"
+        fetchpriority="high"
+      >
+    {% endif %}
+  </a>
+
+  <!-- MAIN NAVIGATION -->
+  <nav
+    class="main-nav"
+    id="StyleiqMainMenu"
+    data-menu
+    aria-label="Main navigation"
+  >
+    {% for link in section.settings.menu.links %}
+      {% if link.links != blank %}
+        <div class="nav-mega" data-nav-mega>
+          <a
+            class="nav-mega-trigger"
+            href="{{ link.url }}"
+            aria-haspopup="true"
+          >
+            {{ link.title | escape }}
+            <span aria-hidden="true">⌄</span>
+          </a>
+
+          <div class="mega-panel">
+            <div class="mega-inner">
+              <div class="mega-intro">
+                <span class="eyebrow">THE STYLEIQ DIRECTORY</span>
+
+                <h2>
+                  {{ link.title | escape }}<br>
+                  <em>find your edit.</em>
+                </h2>
+
+                <a class="mega-all" href="{{ link.url }}">
+                  Explore all {{ link.title | escape }} ↗
+                </a>
+              </div>
+
+              {% for child_link in link.links %}
+                <div class="mega-column">
+                  <a
+                    class="mega-column-title"
+                    href="{{ child_link.url }}"
+                  >
+                    {{ child_link.title | escape }}
+                    <span aria-hidden="true">↗</span>
+                  </a>
+
+                  {% if child_link.links != blank %}
+                    <ul>
+                      {% for grandchild in child_link.links %}
+                        <li>
+                          <a href="{{ grandchild.url }}">
+                            {{ grandchild.title | escape }}
+                          </a>
+                        </li>
+                      {% endfor %}
+                    </ul>
+                  {% endif %}
+                </div>
+              {% endfor %}
+
+              <a
+                class="mega-feature"
+                href="{{ section.settings.mega_feature_link | default: '/collections/all' }}"
+              >
+                {% if section.settings.mega_feature_image != blank %}
+                  {{
+                    section.settings.mega_feature_image
+                    | image_url: width: 700
+                    | image_tag:
+                      loading: 'lazy',
+                      alt: section.settings.mega_feature_title
+                  }}
+                {% else %}
+                  <img
+                    src="{{ '11_cropped_blazer.jpg' | asset_url }}"
+                    alt="Explore the latest fashion edit"
+                    loading="lazy"
+                    width="500"
+                    height="650"
+                  >
+                {% endif %}
+
+                <span>THE LATEST EDIT</span>
+                <strong>
+                  {{ section.settings.mega_feature_title
+                    | default: 'Pieces to keep.'
+                    | escape }}
+                </strong>
+              </a>
+            </div>
+          </div>
+        </div>
+      {% else %}
+        <a href="{{ link.url }}">
+          {{ link.title | escape }}
+        </a>
+      {% endif %}
+    {% endfor %}
+
+    {% if section.settings.show_stylist %}
+      <a
+        class="nav-feature"
+        href="{{ section.settings.stylist_link | default: '/pages/ai-stylist' }}"
+      >
+        <span aria-hidden="true">✳</span>
+        AI Stylist
+      </a>
+    {% endif %}
+  </nav>
+
+  <!-- HEADER ACTIONS -->
+  <div class="header-actions">
+    <a
+      class="icon-link"
+      href="{{ routes.search_url }}"
+      aria-label="Search"
+    >
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="10.8" cy="10.8" r="6.6"></circle>
+        <path d="m16 16 4.2 4.2"></path>
+      </svg>
+      <span class="action-label">Search</span>
+    </a>
+
+    {% if shop.customer_accounts_enabled %}
+      <a
+        class="icon-link account-link"
+        href="{{ routes.account_url }}"
+        aria-label="Account"
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="8" r="3.3"></circle>
+          <path d="M5.5 20c.5-4 2.7-6 6.5-6s6 2 6.5 6"></path>
+        </svg>
+        <span class="action-label">Account</span>
+      </a>
+    {% endif %}
+
+    <a
+      class="icon-link bag-link"
+      href="{{ routes.cart_url }}"
+      aria-label="Shopping bag, {{ cart.item_count }} items"
+    >
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M5 8h14l1 12H4L5 8Z"></path>
+        <path d="M9 8V6a3 3 0 0 1 6 0v2"></path>
+      </svg>
+      <span class="action-label">Bag</span>
+      <span class="cart-count">{{ cart.item_count }}</span>
+    </a>
+  </div>
+</header>
+
+{% style %}
+  .site-header .brand-image {
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-shrink: 0;
+    width: {{ section.settings.logo_width }}px;
+    max-width: 100%;
+    text-decoration: none;
+    line-height: 0;
+  }
+
+  .site-header .brand-logo {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: 68px;
+    object-fit: contain;
+    object-position: left center;
+  }
+
+  .site-header .header-actions svg {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    width: 21px;
+    height: 21px;
+  }
+
+  .site-header .icon-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .site-header .cart-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 23px;
+    height: 23px;
+    padding: 0 5px;
+    border: 1px solid currentColor;
+    border-radius: 50%;
+    font-size: 10px;
+    line-height: 1;
+  }
+
+  .site-header .brand-logo,
+  .site-header .mega-feature img {
+    transition: opacity .25s ease;
+  }
+
+  .site-header .brand-image:hover .brand-logo,
+  .site-header .mega-feature:hover img {
+    opacity: .82;
+  }
+
+  .site-header .mega-feature img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+  }
+
+  .site-header .mega-feature {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .site-header .mega-feature > span {
+    margin-top: 5px;
+    font-size: 9px;
+    letter-spacing: .18em;
+  }
+
+  .site-header .mega-feature > strong {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 22px;
+    font-weight: 400;
+  }
+
+  @media screen and (max-width: 749px) {
+    .site-header .brand-image {
+      width: min({{ section.settings.logo_width }}px, 150px);
+    }
+
+    .site-header .brand-logo {
+      max-height: 48px;
+    }
+
+    .site-header .action-label {
+      display: none;
+    }
+
+    .site-header .header-actions {
+      gap: 12px;
+    }
+
+    .site-header .mega-feature {
+      display: none;
+    }
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Header",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo image"
+    },
+    {
+      "type": "range",
+      "id": "logo_width",
+      "label": "Logo width",
+      "min": 100,
+      "max": 320,
+      "step": 10,
+      "unit": "px",
+      "default": 210
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Main menu",
+      "default": "main-menu"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_stylist",
+      "label": "Show AI Stylist link",
+      "default": true
+    },
+    {
+      "type": "url",
+      "id": "stylist_link",
+      "label": "AI Stylist page link"
+    },
+    {
+      "type": "url",
+      "id": "mega_feature_link",
+      "label": "Mega menu feature link"
+    },
+    {
+      "type": "image_picker",
+      "id": "mega_feature_image",
+      "label": "Mega menu feature image"
+    },
+    {
+      "type": "text",
+      "id": "mega_feature_title",
+      "label": "Mega menu feature title",
+      "default": "Pieces to keep."
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,42 @@
+{% if product.featured_image %}
+  {{ product.featured_image | image_url: width: 900 | image_tag: loading: 'lazy', widths: '360,540,720,900', alt: product.featured_image.alt | default: product.title | escape }}
+{% else %}
+  {% assign siq_title = product.title | downcase %}
+  {% assign siq_asset = blank %}
+  {% if siq_title contains 'essential linen shirt' %}{% assign siq_asset = '01_essential_linen_shirt.jpg' %}{% endif %}
+  {% if siq_title contains 'oversized tee' %}{% assign siq_asset = '02_oversized_tee.jpg' %}{% endif %}
+  {% if siq_title contains 'tailored trousers' %}{% assign siq_asset = '03_tailored_trousers.jpg' %}{% endif %}
+  {% if siq_title contains 'linen blazer' %}{% assign siq_asset = '04_linen_blazer.jpg' %}{% endif %}
+  {% if siq_title contains 'denim jacket' %}{% assign siq_asset = '05_denim_jacket.jpg' %}{% endif %}
+  {% if siq_title contains 'clean court sneakers' %}{% assign siq_asset = '06_clean_court_sneakers.jpg' %}{% endif %}
+  {% if siq_title contains 'satin midi dress' %}{% assign siq_asset = '07_satin_midi_dress.jpg' %}{% endif %}
+  {% if siq_title contains 'co-ord set' %}{% assign siq_asset = '08_coord_set.jpg' %}{% endif %}
+  {% if siq_title contains 'wide-leg trousers' %}{% assign siq_asset = '09_wide_leg_trousers.jpg' %}{% endif %}
+  {% if siq_title contains 'wide leg trousers' %}{% assign siq_asset = '09_wide_leg_trousers.jpg' %}{% endif %}
+  {% if siq_title contains 'knit sweater' %}{% assign siq_asset = '10_knit_sweater.jpg' %}{% endif %}
+  {% if siq_title contains 'cropped blazer' %}{% assign siq_asset = '11_cropped_blazer.jpg' %}{% endif %}
+  {% if siq_title contains 'structured handbag' %}{% assign siq_asset = '12_structured_handbag.jpg' %}{% endif %}
+  {% if siq_title contains 'sling bag' %}{% assign siq_asset = '13_sling_bag.jpg' %}{% endif %}
+  {% if siq_title contains 'leather belt' %}{% assign siq_asset = '14_leather_belt.jpg' %}{% endif %}
+  {% if siq_title contains 'polarized sunglasses' %}{% assign siq_asset = '15_polarized_sunglasses.jpg' %}{% endif %}
+  {% if siq_title contains 'classic wrist watch' %}{% assign siq_asset = '16_classic_wrist_watch.jpg' %}{% endif %}
+  {% if siq_title contains 'signature perfume' %}{% assign siq_asset = '17_signature_perfume.jpg' %}{% endif %}
+  {% if siq_title contains 'leather wallet' %}{% assign siq_asset = '18_leather_wallet.jpg' %}{% endif %}
+  {% if siq_title contains 'polo shirt' %}{% assign siq_asset = '19_polo_shirt.jpg' %}{% endif %}
+  {% if siq_title contains 'cargo pants' %}{% assign siq_asset = '20_cargo_pants.jpg' %}{% endif %}
+  {% if siq_title contains 'hoodie' %}{% assign siq_asset = '21_hoodie.jpg' %}{% endif %}
+  {% if siq_title contains 'bomber jacket' %}{% assign siq_asset = '22_bomber_jacket.jpg' %}{% endif %}
+  {% if siq_title contains 'chino pants' %}{% assign siq_asset = '23_chino_pants.jpg' %}{% endif %}
+  {% if siq_title contains 'maxi dress' %}{% assign siq_asset = '24_maxi_dress.jpg' %}{% endif %}
+  {% if siq_title contains 'summer dress' %}{% assign siq_asset = '25_summer_dress.jpg' %}{% endif %}
+  {% if siq_title contains 'crop top' %}{% assign siq_asset = '26_crop_top.jpg' %}{% endif %}
+  {% if siq_title contains 'skirt' %}{% assign siq_asset = '27_skirt.jpg' %}{% endif %}
+  {% if siq_title contains 'cardigan' %}{% assign siq_asset = '28_cardigan.jpg' %}{% endif %}
+  {% if siq_title contains 'heels' %}{% assign siq_asset = '29_heels.jpg' %}{% endif %}
+  {% if siq_title contains 'ankle boots' %}{% assign siq_asset = '30_ankle_boots.jpg' %}{% endif %}
+  {% if siq_asset != blank %}
+    <img src="{{ siq_asset | asset_url }}" alt="{{ product.title | escape }}" loading="lazy" width="900" height="1200">
+  {% else %}
+    <img src="{{ 'styleiq-editorial-hero.jpg' | asset_url }}" alt="{{ product.title | escape }}" loading="lazy" width="900" height="1200">
+  {% endif %}
+{% endif %}

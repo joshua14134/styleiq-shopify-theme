@@ -1,0 +1,18 @@
+<section class="ai-page">
+  <div class="ai-intro"><span class="eyebrow">STYLEIQ INTELLIGENCE</span><h1>Meet your<br><em>personal stylist.</em></h1><p>Build a considered edit around your plans, personal style, and budget. Recommendations below are drawn from the products you publish in Shopify.</p><div class="stylist-note"><span aria-hidden="true">✳</span><span><strong>A little more you.</strong><br>Thoughtful picks. Your budget. Your rules.</span></div></div>
+  <form class="stylist-form" data-stylist-form>
+    <span class="eyebrow">YOUR STYLE BRIEF</span>
+    <label for="StylistOccasion">What's the occasion?<select id="StylistOccasion" name="occasion"><option value="everyday">Everyday</option><option value="workwear">Workwear</option><option value="date night">Date night</option><option value="special occasion">Special occasion</option></select></label>
+    <label for="StylistBudget">What's your budget?<select id="StylistBudget" name="budget"><option value="2000">Under ₹2,000</option><option value="5000">₹2,000–₹5,000</option><option value="10000">₹5,000 and above</option></select></label>
+    <label for="StylistStyle">How would you describe your style?<select id="StylistStyle" name="style"><option value="minimal">Minimal & considered</option><option value="casual">Relaxed & casual</option><option value="formal">Polished & formal</option><option value="trend-led">Modern & trend-led</option></select></label>
+    <button class="button button-dark full-button" type="submit">Curate my edit <span aria-hidden="true">↗</span></button>
+    <p class="stylist-message" data-stylist-message role="status" aria-live="polite">Choose your preferences to explore a more personal edit.</p>
+  </form>
+  <div class="stylist-results"><div class="section-head"><div><span class="eyebrow">THE EDIT</span><h2>Pieces for you.</h2></div><a class="text-link" href="{{ routes.all_products_collection_url }}">Shop everything ↗</a></div>
+    <div class="product-grid" data-stylist-products>
+      {% assign stylist_collection = section.settings.collection %}
+      {% if stylist_collection != blank %}{% for product in stylist_collection.products limit: 12 %}<article class="product-card stylist-product" data-price="{{ product.price | divided_by: 100.0 }}" data-tags="{{ product.tags | join: ',' | downcase | escape }}" data-type="{{ product.type | downcase | escape }}"><a class="product-image" href="{{ product.url }}">{% render 'product-image', product: product %}</a><div class="product-meta"><div><a class="product-name" href="{{ product.url }}">{{ product.title | escape }}</a><span class="product-color">{{ product.type | escape }}</span></div><strong>{{ product.price | money }}</strong></div></article>{% endfor %}{% else %}<p class="empty-state">Choose a collection in the theme editor to power your stylist recommendations.</p>{% endif %}
+    </div>
+  </div>
+</section>
+{% schema %}{"name":"AI stylist","settings":[{"type":"collection","id":"collection","label":"Products for stylist","info":"Select the collection that the stylist should recommend from."}],"presets":[{"name":"AI stylist"}]}{% endschema %}

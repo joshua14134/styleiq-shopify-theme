@@ -1,0 +1,31 @@
+[
+  {
+    "name": "STYLEIQ",
+    "settings": [
+      {
+        "type": "color",
+        "id": "ink",
+        "label": "Primary text",
+        "default": "#171717"
+      },
+      {
+        "type": "color",
+        "id": "paper",
+        "label": "Page background",
+        "default": "#f8f7f4"
+      },
+      {
+        "type": "color",
+        "id": "accent",
+        "label": "Accent",
+        "default": "#88765c"
+      },
+      {
+        "type": "text",
+        "id": "tagline",
+        "label": "Brand tagline",
+        "default": "YOUR STYLE. YOUR FIT. YOUR INTELLIGENCE."
+      }
+    ]
+  }
+]

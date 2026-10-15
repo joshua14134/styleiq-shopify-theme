@@ -1,0 +1,492 @@
+
+<section
+  class="hero siq-hero-slider"
+  data-siq-slider
+  data-siq-autoplay="{{ section.settings.autoplay }}"
+  data-siq-interval="{{ section.settings.autoplay_speed | times: 1000 }}"
+  aria-label="Featured fashion edits"
+>
+  <div class="siq-slides" data-siq-slides>
+    {% if section.blocks.size > 0 %}
+      {% for block in section.blocks %}
+        {% assign fallback_asset = 'styleiq-editorial-hero.jpg' %}
+        {% assign slide_key = block.settings.heading | downcase %}
+
+        {% if slide_key contains 'men' %}
+          {% assign fallback_asset = '05_denim_jacket.jpg' %}
+        {% elsif slide_key contains 'women' or slide_key contains 'soft' %}
+          {% assign fallback_asset = '11_cropped_blazer.jpg' %}
+        {% elsif slide_key contains 'accessor' %}
+          {% assign fallback_asset = '12_structured_handbag.jpg' %}
+        {% elsif slide_key contains 'new' %}
+          {% assign fallback_asset = '07_satin_midi_dress.jpg' %}
+        {% elsif slide_key contains 'everyday' %}
+          {% assign fallback_asset = '08_coord_set.jpg' %}
+        {% endif %}
+
+        <article
+          class="siq-hero-slide{% if forloop.first %} is-active{% endif %}"
+          data-siq-slide
+          {{ block.shopify_attributes }}
+          aria-hidden="{% if forloop.first %}false{% else %}true{% endif %}"
+        >
+          {% if block.settings.image != blank %}
+            {{
+              block.settings.image
+              | image_url: width: 2200
+              | image_tag:
+                class: 'hero-image',
+                widths: '750,1100,1600,2200',
+                sizes: '100vw',
+                loading: 'lazy',
+                alt: block.settings.heading
+            }}
+          {% else %}
+            <img
+              class="hero-image"
+              src="{{ fallback_asset | asset_url }}"
+              alt="{{ block.settings.heading | escape }} fashion edit"
+              width="1983"
+              height="1000"
+              {% if forloop.first %}
+                fetchpriority="high"
+                loading="eager"
+              {% else %}
+                loading="lazy"
+              {% endif %}
+            >
+          {% endif %}
+
+          <div class="hero-overlay" aria-hidden="true"></div>
+
+          <div class="hero-copy">
+            {% if block.settings.eyebrow != blank %}
+              <span class="eyebrow">
+                {{ block.settings.eyebrow | escape }}
+              </span>
+            {% endif %}
+
+            <h1>
+              {{ block.settings.heading | escape }}
+              {% if block.settings.italic_heading != blank %}
+                <br>
+                <em>{{ block.settings.italic_heading | escape }}</em>
+              {% endif %}
+            </h1>
+
+            {% if block.settings.copy != blank %}
+              <p>{{ block.settings.copy | escape }}</p>
+            {% endif %}
+
+            <div class="hero-actions">
+              {% if block.settings.button_label != blank %}
+                <a
+                  class="button button-dark"
+                  href="{{ block.settings.button_link | default: '/collections/all' }}"
+                >
+                  {{ block.settings.button_label | escape }}
+                  <span aria-hidden="true">→</span>
+                </a>
+              {% endif %}
+
+              {% if block.settings.second_label != blank %}
+                <a
+                  class="button button-light"
+                  href="{{ block.settings.second_link | default: '/pages/ai-stylist' }}"
+                >
+                  <span aria-hidden="true">✦</span>
+                  {{ block.settings.second_label | escape }}
+                </a>
+              {% endif %}
+            </div>
+          </div>
+        </article>
+      {% endfor %}
+
+    {% else %}
+      <article
+        class="siq-hero-slide is-active"
+        data-siq-slide
+        aria-hidden="false"
+      >
+        {% if section.settings.image != blank %}
+          {{
+            section.settings.image
+            | image_url: width: 2200
+            | image_tag:
+              class: 'hero-image',
+              widths: '750,1100,1600,2200',
+              sizes: '100vw',
+              loading: 'eager',
+              alt: section.settings.heading
+          }}
+        {% else %}
+          <img
+            class="hero-image"
+            src="{{ 'styleiq-editorial-hero.jpg' | asset_url }}"
+            alt="Editorial STYLEIQ fashion campaign"
+            width="1983"
+            height="1000"
+            fetchpriority="high"
+            loading="eager"
+          >
+        {% endif %}
+
+        <div class="hero-overlay" aria-hidden="true"></div>
+
+        <div class="hero-copy">
+          {% if section.settings.eyebrow != blank %}
+            <span class="eyebrow">
+              {{ section.settings.eyebrow | escape }}
+            </span>
+          {% endif %}
+
+          <h1>
+            {{ section.settings.heading | escape }}
+            {% if section.settings.italic_heading != blank %}
+              <br>
+              <em>{{ section.settings.italic_heading | escape }}</em>
+            {% endif %}
+          </h1>
+
+          {% if section.settings.copy != blank %}
+            <p>{{ section.settings.copy | escape }}</p>
+          {% endif %}
+
+          <div class="hero-actions">
+            {% if section.settings.button_label != blank %}
+              <a
+                class="button button-dark"
+                href="{{ section.settings.button_link | default: '/collections/all' }}"
+              >
+                {{ section.settings.button_label | escape }} →
+              </a>
+            {% endif %}
+
+            {% if section.settings.second_label != blank %}
+              <a
+                class="button button-light"
+                href="{{ section.settings.second_link | default: '/pages/ai-stylist' }}"
+              >
+                ✦ {{ section.settings.second_label | escape }}
+              </a>
+            {% endif %}
+          </div>
+        </div>
+      </article>
+    {% endif %}
+  </div>
+
+  {% if section.blocks.size > 1 %}
+    <div class="siq-slider-controls" aria-label="Slider controls">
+      <button
+        type="button"
+        data-siq-prev
+        aria-label="Previous slide"
+      >←</button>
+
+      <div
+        class="siq-slider-dots"
+        role="group"
+        aria-label="Choose featured slide"
+      >
+        {% for block in section.blocks %}
+          <button
+            type="button"
+            data-siq-dot="{{ forloop.index0 }}"
+            aria-label="Go to slide {{ forloop.index }}"
+            class="{% if forloop.first %}is-active{% endif %}"
+            aria-current="{% if forloop.first %}true{% else %}false{% endif %}"
+          ></button>
+        {% endfor %}
+      </div>
+
+      <button
+        type="button"
+        data-siq-next
+        aria-label="Next slide"
+      >→</button>
+    </div>
+  {% endif %}
+</section>
+
+{% style %}
+  #shopify-section-{{ section.id }} .siq-hero-slider {
+    position: relative;
+    isolation: isolate;
+  }
+
+  #shopify-section-{{ section.id }} .siq-slides {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+  }
+
+  #shopify-section-{{ section.id }} .siq-hero-slide {
+    position: absolute;
+    inset: 0;
+    display: block;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity .65s ease, visibility .65s ease;
+  }
+
+  #shopify-section-{{ section.id }} .siq-hero-slide.is-active {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    z-index: 1;
+  }
+
+  #shopify-section-{{ section.id }} .siq-hero-slide .hero-image {
+    display: block;
+  }
+
+  #shopify-section-{{ section.id }} .siq-slider-controls {
+    position: absolute;
+    z-index: 4;
+    right: clamp(18px, 5vw, 76px);
+    bottom: 28px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    color: #fff;
+  }
+
+  #shopify-section-{{ section.id }} .siq-slider-controls > button {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border: 1px solid rgba(255,255,255,.55);
+    border-radius: 50%;
+    background: rgba(15,15,15,.18);
+    color: inherit;
+    cursor: pointer;
+    transition: background .2s ease, color .2s ease;
+  }
+
+  #shopify-section-{{ section.id }} .siq-slider-controls > button:hover {
+    background: #f0c86a;
+    color: #171614;
+  }
+
+  #shopify-section-{{ section.id }} .siq-slider-dots {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+
+  #shopify-section-{{ section.id }} .siq-slider-dots button {
+    width: 7px;
+    height: 7px;
+    padding: 0;
+    border: 0;
+    border-radius: 50px;
+    background: rgba(255,255,255,.55);
+    cursor: pointer;
+    transition: width .25s ease, background .25s ease;
+  }
+
+  #shopify-section-{{ section.id }} .siq-slider-dots button.is-active {
+    width: 25px;
+    background: #f0c86a;
+  }
+
+  #shopify-section-{{ section.id }} .siq-slider-controls button:focus-visible {
+    outline: 2px solid #f0c86a;
+    outline-offset: 3px;
+  }
+
+  @media (max-width: 700px) {
+    #shopify-section-{{ section.id }} .siq-slider-controls {
+      right: 18px;
+      bottom: 18px;
+      gap: 9px;
+    }
+
+    #shopify-section-{{ section.id }} .siq-slider-controls > button {
+      width: 34px;
+      height: 34px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #shopify-section-{{ section.id }} .siq-hero-slide {
+      transition: none;
+    }
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "STYLEIQ hero slider",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Fallback hero image"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "THE NEW SEASON"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Wear your"
+    },
+    {
+      "type": "text",
+      "id": "italic_heading",
+      "label": "Italic heading",
+      "default": "own story."
+    },
+    {
+      "type": "textarea",
+      "id": "copy",
+      "label": "Copy",
+      "default": "Considered essentials and personal styling for the way you live now."
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Primary button",
+      "default": "Shop collection"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Primary link"
+    },
+    {
+      "type": "text",
+      "id": "second_label",
+      "label": "Secondary button",
+      "default": "Meet your AI stylist"
+    },
+    {
+      "type": "url",
+      "id": "second_link",
+      "label": "Secondary link"
+    },
+    {
+      "type": "checkbox",
+      "id": "autoplay",
+      "label": "Automatically change slides",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "autoplay_speed",
+      "label": "Slide interval",
+      "min": 3,
+      "max": 10,
+      "step": 1,
+      "unit": "s",
+      "default": 6
+    }
+  ],
+  "blocks": [
+    {
+      "type": "slide",
+      "name": "Hero slide",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Slide image"
+        },
+        {
+          "type": "text",
+          "id": "eyebrow",
+          "label": "Eyebrow",
+          "default": "THE STYLEIQ EDIT"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Wear what"
+        },
+        {
+          "type": "text",
+          "id": "italic_heading",
+          "label": "Italic heading",
+          "default": "feels like you."
+        },
+        {
+          "type": "textarea",
+          "id": "copy",
+          "label": "Description",
+          "default": "Thoughtful pieces, personal style, and a wardrobe that feels like yours."
+        },
+        {
+          "type": "text",
+          "id": "button_label",
+          "label": "Primary button",
+          "default": "Shop the edit"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "Primary link"
+        },
+        {
+          "type": "text",
+          "id": "second_label",
+          "label": "Secondary button",
+          "default": "Meet your AI stylist"
+        },
+        {
+          "type": "url",
+          "id": "second_link",
+          "label": "Secondary link"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 5,
+  "presets": [
+    {
+      "name": "STYLEIQ hero slider",
+      "blocks": [
+        {
+          "type": "slide",
+          "settings": {
+            "eyebrow": "THE NEW SEASON",
+            "heading": "Wear what",
+            "italic_heading": "feels like you.",
+            "copy": "Modern essentials, personal edits, and pieces worth keeping.",
+            "button_label": "Shop the edit"
+          }
+        },
+        {
+          "type": "slide",
+          "settings": {
+            "eyebrow": "THE MENS EDIT",
+            "heading": "Everyday,",
+            "italic_heading": "reconsidered.",
+            "copy": "Easy layers and confident essentials, made for your own rhythm.",
+            "button_label": "Shop menswear"
+          }
+        },
+        {
+          "type": "slide",
+          "settings": {
+            "eyebrow": "THE WOMENS EDIT",
+            "heading": "A softer",
+            "italic_heading": "statement.",
+            "copy": "Strong silhouettes, thoughtful details, and a little room to play.",
+            "button_label": "Shop womenswear"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

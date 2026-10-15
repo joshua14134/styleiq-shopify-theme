@@ -1,0 +1,11 @@
+{
+  "sections": {
+    "main": {
+      "type": "ai-stylist",
+      "settings": {}
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

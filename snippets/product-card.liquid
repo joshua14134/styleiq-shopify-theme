@@ -1,0 +1,462 @@
+
+<article class="product-card siq-product-card" data-product-card>
+  {% assign card_variant = product.selected_or_first_available_variant %}
+  {% assign card_image = product.featured_image %}
+
+  <!-- PRODUCT IMAGE -->
+  <div class="product-card-media siq-product-media">
+    <a
+      class="product-image siq-product-image"
+      href="{{ product.url }}"
+      aria-label="View {{ product.title | escape }}"
+    >
+      {% if card_image != blank %}
+        {{
+          card_image
+          | image_url: width: 1000
+          | image_tag:
+            loading: 'lazy',
+            widths: '360,540,720,900,1000',
+            sizes: '(min-width: 1200px) 25vw, (min-width: 750px) 33vw, 50vw',
+            alt: card_image.alt | default: product.title
+        }}
+      {% else %}
+        {{ 'product-1' | placeholder_svg_tag: 'siq-product-placeholder' }}
+      {% endif %}
+
+      {% if product.images.size > 1 %}
+        {{
+          product.images[1]
+          | image_url: width: 1000
+          | image_tag:
+            loading: 'lazy',
+            widths: '360,540,720,900,1000',
+            sizes: '(min-width: 1200px) 25vw, (min-width: 750px) 33vw, 50vw',
+            alt: product.images[1].alt | default: product.title,
+            class: 'product-image-secondary'
+        }}
+      {% endif %}
+
+      {% if product.compare_at_price > product.price %}
+        <span class="product-tag siq-product-sale">SALE</span>
+      {% elsif product.tags contains 'Bestseller' %}
+        <span class="product-tag siq-product-bestseller">BESTSELLER</span>
+      {% elsif product.tags contains 'New' %}
+        <span class="product-tag siq-product-new">NEW ARRIVAL</span>
+      {% endif %}
+    </a>
+
+    {% if product.available %}
+      <button
+        type="button"
+        class="siq-quickview-trigger"
+        data-siq-quickview-trigger
+        data-handle="{{ product.handle | escape }}"
+        aria-label="Quick view {{ product.title | escape }}"
+      >
+        <span>Quick view</span>
+        <span aria-hidden="true">↗</span>
+      </button>
+    {% endif %}
+  </div>
+
+  <!-- PRODUCT INFORMATION -->
+  <div class="product-meta siq-product-meta">
+    <div class="siq-product-copy">
+      <a class="product-name siq-product-name" href="{{ product.url }}">
+        {{ product.title | escape }}
+      </a>
+
+      <span class="product-color siq-product-subtitle">
+        {% if card_variant != blank and card_variant.title != 'Default Title' %}
+          {{ card_variant.title | escape }}
+        {% else %}
+          Considered essentials
+        {% endif %}
+      </span>
+    </div>
+
+    <div class="siq-product-pricing">
+      <strong class="siq-product-price">
+        {% if card_variant != blank %}
+          {{ card_variant.price | money }}
+        {% else %}
+          {{ product.price | money }}
+        {% endif %}
+      </strong>
+
+      {% if product.compare_at_price > product.price %}
+        <s class="siq-product-compare">
+          {{ product.compare_at_price | money }}
+        </s>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- QUICK ADD -->
+  {% if product.available and card_variant != blank %}
+    {% if product.has_only_default_variant %}
+      <form
+        method="post"
+        action="{{ routes.cart_add_url }}"
+        class="quick-add-form siq-quick-add-form"
+        data-quick-add-form
+      >
+        <input type="hidden" name="id" value="{{ card_variant.id }}">
+        <input type="hidden" name="quantity" value="1">
+
+        <button
+          type="submit"
+          class="siq-add-button"
+          data-quick-add-button
+        >
+          <span>＋ Add to bag</span>
+          <span>{{ card_variant.price | money }}</span>
+        </button>
+      </form>
+    {% else %}
+      <a class="siq-add-button siq-select-options" href="{{ product.url }}">
+        <span>Select options</span>
+        <span aria-hidden="true">↗</span>
+      </a>
+    {% endif %}
+  {% else %}
+    <div class="siq-sold-out" aria-label="Product unavailable">
+      Currently unavailable
+    </div>
+  {% endif %}
+</article>
+
+{% style %}
+  .siq-product-card {
+    --siq-card-text: #171714;
+    --siq-card-muted: #777168;
+    --siq-card-gold: #b89449;
+    --siq-card-border: #e5dfd4;
+    --siq-card-white: #fffefa;
+
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    height: 100%;
+    color: var(--siq-card-text);
+  }
+
+  .siq-product-card *,
+  .siq-product-card *::before,
+  .siq-product-card *::after {
+    box-sizing: border-box;
+  }
+
+  .siq-product-media {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    background: #eeece6;
+    isolation: isolate;
+  }
+
+  .siq-product-image {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    background: #eeece6;
+  }
+
+  .siq-product-image > img,
+  .siq-product-image > .siq-product-placeholder {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: opacity .4s ease, transform .65s ease;
+  }
+
+  .siq-product-image > img:first-child {
+    position: relative;
+    z-index: 1;
+  }
+
+  .siq-product-image > img.product-image-secondary {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    opacity: 0;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .siq-product-card:hover .siq-product-image > img:first-child {
+      transform: scale(1.035);
+    }
+
+    .siq-product-card:hover .siq-product-image > img.product-image-secondary {
+      opacity: 1;
+      transform: scale(1.02);
+    }
+  }
+
+  .siq-product-image:focus-visible {
+    outline: 2px solid var(--siq-card-gold);
+    outline-offset: -3px;
+  }
+
+  /* BADGES */
+
+  .siq-product-card .product-tag {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    z-index: 3;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    max-width: calc(100% - 24px);
+    padding: 8px 10px;
+    background: var(--siq-card-white);
+    color: var(--siq-card-text);
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: .13em;
+    line-height: 1.2;
+    text-transform: uppercase;
+  }
+
+  .siq-product-card .siq-product-sale {
+    background: #171714;
+    color: #fffefa;
+  }
+
+  .siq-product-card .siq-product-bestseller {
+    background: #e8dfc9;
+    color: #302718;
+  }
+
+  .siq-product-card .siq-product-new {
+    background: var(--siq-card-white);
+    color: var(--siq-card-text);
+  }
+
+  /* QUICK VIEW */
+
+  .siq-product-card .siq-quickview-trigger {
+    position: absolute;
+    right: 12px;
+    bottom: 12px;
+    left: 12px;
+    z-index: 4;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    min-height: 44px;
+    padding: 0 15px;
+    border: 1px solid rgba(255, 255, 255, .65);
+    background: rgba(255, 254, 250, .96);
+    color: #171714;
+    font: inherit;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: .04em;
+    text-align: left;
+    cursor: pointer;
+    opacity: 1;
+    transform: translateY(0);
+    transition: background .2s ease, color .2s ease;
+  }
+
+  .siq-product-card .siq-quickview-trigger:hover {
+    border-color: #171714;
+    background: #171714;
+    color: #fffefa;
+  }
+
+  /* PRODUCT DETAILS */
+
+  .siq-product-meta {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 15px 0 12px;
+    color: var(--siq-card-text);
+  }
+
+  .siq-product-copy {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    gap: 7px;
+    min-width: 0;
+  }
+
+  .siq-product-card .siq-product-name {
+    display: -webkit-box;
+    overflow: hidden;
+    color: var(--siq-card-text);
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.55;
+    text-decoration: none;
+    overflow-wrap: anywhere;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  .siq-product-card .siq-product-name:hover {
+    color: #927338;
+  }
+
+  .siq-product-card .siq-product-subtitle {
+    display: block;
+    color: var(--siq-card-muted);
+    font-size: 10px;
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+  }
+
+  .siq-product-pricing {
+    display: flex;
+    flex: 0 0 auto;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: flex-end;
+    gap: 5px 7px;
+    padding-top: 1px;
+    text-align: right;
+  }
+
+  .siq-product-card .siq-product-price {
+    color: var(--siq-card-text);
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.5;
+    white-space: nowrap;
+  }
+
+  .siq-product-card .siq-product-compare {
+    color: var(--siq-card-muted);
+    font-size: 10px;
+    line-height: 1.5;
+    white-space: nowrap;
+  }
+
+  /* ADD TO BAG */
+
+  .siq-product-card .siq-quick-add-form {
+    margin-top: auto;
+    width: 100%;
+  }
+
+  .siq-product-card .siq-add-button {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    width: 100%;
+    min-height: 46px;
+    margin: 0;
+    padding: 0 13px;
+    border: 1px solid #25251f;
+    border-radius: 0;
+    background: transparent;
+    color: #25251f;
+    font-family: inherit;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: .035em;
+    line-height: 1.4;
+    text-align: left;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background .2s ease, color .2s ease, border-color .2s ease;
+  }
+
+  .siq-product-card .siq-add-button:hover {
+    border-color: #171714;
+    background: #171714;
+    color: #fffefa;
+  }
+
+  .siq-product-card .siq-add-button span:last-child {
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+
+  .siq-product-card .siq-add-button:disabled {
+    opacity: .55;
+    cursor: not-allowed;
+  }
+
+  .siq-product-card .siq-select-options {
+    margin-top: auto;
+  }
+
+  .siq-product-card .siq-sold-out {
+    display: flex;
+    align-items: center;
+    min-height: 46px;
+    margin-top: auto;
+    padding: 0 13px;
+    border: 1px solid var(--siq-card-border);
+    color: var(--siq-card-muted);
+    font-size: 11px;
+  }
+
+  .siq-product-card button:focus-visible,
+  .siq-product-card a:focus-visible {
+    outline: 2px solid var(--siq-card-gold);
+    outline-offset: 3px;
+  }
+
+  /* MOBILE */
+
+  @media (max-width: 600px) {
+    .siq-product-meta {
+      flex-direction: column;
+      gap: 6px;
+      padding-top: 12px;
+      padding-bottom: 10px;
+    }
+
+    .siq-product-pricing {
+      justify-content: flex-start;
+      text-align: left;
+    }
+
+    .siq-product-card .siq-product-name {
+      font-size: 12px;
+    }
+
+    .siq-product-card .siq-add-button {
+      min-height: 42px;
+      padding: 0 9px;
+      font-size: 9px;
+    }
+
+    .siq-product-card .product-tag {
+      top: 8px;
+      left: 8px;
+      padding: 6px 7px;
+      font-size: 8px;
+    }
+
+    .siq-product-card .siq-quickview-trigger {
+      right: 7px;
+      bottom: 7px;
+      left: 7px;
+      min-height: 36px;
+      padding: 0 10px;
+      font-size: 10px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .siq-product-card *,
+    .siq-product-card *::before,
+    .siq-product-card *::after {
+      transition: none !important;
+    }
+  }
+{% endstyle %}

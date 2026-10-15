@@ -1,0 +1,12 @@
+<section class="siq-carousel-section siq-warp-surface" data-siq-carousel>
+  <div class="siq-carousel-glow" aria-hidden="true"></div>
+  <div class="siq-carousel-head page-width"><div><span class="eyebrow">THE STYLEIQ EDIT</span><h2>{{ section.settings.heading | escape }}</h2><p>{{ section.settings.copy | escape }}</p></div><div class="siq-carousel-controls"><button type="button" class="siq-arrow" data-siq-prev aria-label="Previous products">←</button><button type="button" class="siq-arrow" data-siq-next aria-label="Next products">→</button></div></div>
+  {% assign collection = section.settings.collection %}
+  <div class="siq-track-wrap"><div class="siq-track" data-siq-track>
+    {% if collection != blank %}{% for product in collection.products limit: section.settings.products_to_show %}
+      <article class="siq-slide"><a class="siq-slide-image" href="{{ product.url }}">{% render 'product-image', product: product %}<span class="siq-slide-index">{{ forloop.index | prepend: '0' }}</span></a><div class="siq-slide-meta"><div><a href="{{ product.url }}" class="siq-product-title">{{ product.title | escape }}</a><span>{{ product.type | escape }}</span></div><strong>{{ product.price | money }}</strong></div></article>
+    {% endfor %}{% else %}<div class="siq-empty">Select a collection in the theme editor to show your live products here.</div>{% endif %}
+  </div></div>
+  <div class="siq-carousel-foot page-width"><span>CURATED FOR YOUR EVERYDAY</span><a href="{{ routes.all_products_collection_url }}">Explore all pieces ↗</a></div>
+</section>
+{% schema %}{"name":"Animated product edit","settings":[{"type":"text","id":"heading","label":"Heading","default":"Pieces in motion."},{"type":"text","id":"copy","label":"Description","default":"A considered selection from your live Shopify catalogue."},{"type":"collection","id":"collection","label":"Collection"},{"type":"range","id":"products_to_show","min":4,"max":12,"step":1,"label":"Products to show","default":8}],"presets":[{"name":"Animated product edit"}]}{% endschema %}

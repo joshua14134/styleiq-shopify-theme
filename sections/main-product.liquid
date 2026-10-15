@@ -1,0 +1,25 @@
+<section class="siq-product-page" data-siq-product-page>
+  <div class="product-detail">
+    <div class="product-gallery" data-product-gallery>
+      {% for media in product.media %}<div class="product-media" data-media-id="{{ media.id }}">{% case media.media_type %}{% when 'image' %}{{ media | image_url: width: 1400 | image_tag: loading: 'lazy', alt: media.alt | default: product.title }}{% when 'video' %}{{ media | video_tag: controls: true }}{% when 'external_video' %}{{ media | external_video_tag }}{% else %}{{ media | media_tag }}{% endcase %}</div>{% endfor %}
+    </div>
+    <div class="product-info">
+      <span class="eyebrow">{{ product.type | default: 'THE STYLEIQ EDIT' | escape }}</span>
+      <h1>{{ product.title | escape }}</h1>
+      <div class="detail-price" data-product-price data-money-format="{{ shop.money_format | escape }}">{{ product.selected_or_first_available_variant.price | money }}{% if product.selected_or_first_available_variant.compare_at_price > product.selected_or_first_available_variant.price %}<s>{{ product.selected_or_first_available_variant.compare_at_price | money }}</s>{% endif %}</div>
+      {% if section.settings.show_vendor %}<p class="vendor">By {{ product.vendor | escape }}</p>{% endif %}
+      <div class="rte product-description">{{ product.description }}</div>
+      {% form 'product', product, id: 'ProductForm', class: 'product-form' %}
+        {% unless product.has_only_default_variant %}<label for="VariantSelect">Select your options</label><select id="VariantSelect" name="id" data-variant-select>{% for variant in product.variants %}<option value="{{ variant.id }}" data-price="{{ variant.price }}" data-compare-price="{{ variant.compare_at_price | default: 0 }}" data-available="{{ variant.available }}" {% if variant == product.selected_or_first_available_variant %}selected{% endif %} {% unless variant.available %}disabled{% endunless %}>{{ variant.title | escape }} — {{ variant.price | money }}{% unless variant.available %} · Sold out{% endunless %}</option>{% endfor %}</select>{% else %}<input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">{% endunless %}
+        <div class="siq-quantity-row"><label for="Quantity">Quantity</label><div class="siq-quantity-control"><button type="button" data-qty-step="-1" aria-label="Decrease quantity">−</button><input id="Quantity" name="quantity" type="number" min="1" value="1" data-product-quantity><button type="button" data-qty-step="1" aria-label="Increase quantity">＋</button></div></div>
+        <button class="button button-dark full-button siq-atc" type="submit" data-add-button {% unless product.available %}disabled{% endunless %}>{% if product.available %}Add to bag — {{ product.selected_or_first_available_variant.price | money }}{% else %}Sold out{% endif %}</button>
+        <button class="siq-buy-now" type="button" data-buy-now {% unless product.available %}disabled{% endunless %}>Buy now · Secure checkout ↗</button>
+        {{ form | payment_button }}
+      {% endform %}
+      <div class="product-promises"><p>✦ Complimentary shipping on qualifying orders</p><p>↺ Thoughtful support with returns and exchanges</p><p>◇ Secure checkout, powered by Shopify</p></div>
+      {% if section.settings.show_size_guide %}<button type="button" class="siq-size-guide-link" data-siq-size-guide>＋ Size & fit notes</button><div class="siq-size-guide-copy" data-siq-size-copy hidden>{{ section.settings.size_guide | escape | newline_to_br }}</div>{% endif %}
+    </div>
+  </div>
+  <div class="siq-mobile-buybar" data-siq-mobile-buybar><div><span>{{ product.title | escape }}</span><strong data-siq-mobile-price>{{ product.selected_or_first_available_variant.price | money }}</strong></div><button type="button" data-siq-mobile-add {% unless product.available %}disabled{% endunless %}>Add to bag ↗</button></div>
+</section>
+{% schema %}{"name":"Main product","settings":[{"type":"checkbox","id":"show_vendor","label":"Show vendor","default":false},{"type":"checkbox","id":"show_size_guide","label":"Show size and fit notes","default":true},{"type":"textarea","id":"size_guide","label":"Size and fit notes","default":"Choose your usual size for the intended fit. If you are between sizes, check the product measurements or contact our team for help."}]}{% endschema %}
