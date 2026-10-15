@@ -3,23 +3,46 @@
 
 **Dress Intuitively. Discover Your Style.**
 
-STYLEIQ is a luxury-inspired fashion e-commerce storefront designed around elegant typography, editorial layouts, refined product displays, and a seamless shopping experience.
+STYLEIQ is a luxury-inspired fashion e-commerce storefront built with Shopify Liquid, featuring refined typography, editorial layouts, curated collections, and a sophisticated shopping experience.
+
+---
+
+## Live Storefront
+
+**Website:** [Visit STYLEIQ](https://tygx7k-kw.myshopify.com/)
+
+**Storefront Password:** `123456`
+
+If prompted by the storefront password page, enter the password above.
+
+**GitHub Repository:** [joshua14134/styleiq-shopify-theme](https://github.com/joshua14134/styleiq-shopify-theme)
+
+> **Note:** The storefront password works only while Shopify password protection is enabled and the password remains unchanged. For unrestricted public access, disable storefront password protection in Shopify.
+
+---
 
 ## Overview
 
-STYLEIQ brings a modern, sophisticated aesthetic to Shopify with a focus on personal style, curated collections, and a clean, responsive shopping experience.
+STYLEIQ brings a modern luxury aesthetic to fashion e-commerce, combining minimal design, thoughtful presentation, and responsive layouts to create a refined shopping experience.
 
-### Highlights
+The project focuses on brand identity, curated product discovery, elegant navigation, and a consistent visual experience across desktop and mobile devices.
 
-- **Luxury Editorial Design** — Refined typography, generous whitespace, and an elegant dark-and-ivory aesthetic.
+## Features
+
+- **Luxury Editorial Design** — Refined typography, generous whitespace, and a sophisticated dark, ivory, and champagne-gold palette.
 - **Custom Header** — Brand logo, responsive navigation, and configurable mega menu.
 - **Hero Slider** — Fashion-led homepage presentation.
 - **Featured Collections** — Curated product displays with responsive layouts.
 - **Product Cards** — Product imagery, pricing, sale information, and shopping actions.
-- **Newsletter Signup** — Built-in Shopify customer newsletter form.
-- **Custom Footer** — Brand identity, navigation, newsletter, and policy links.
+- **Newsletter Signup** — Shopify customer newsletter form.
+- **Custom Footer** — Brand identity, navigation, social links, and policy links.
 - **Responsive Layout** — Designed for desktop and mobile storefronts.
-- **Shopify Integration** — Uses Shopify's Liquid templates, theme sections, settings, and commerce features.
+- **Theme Customization** — Configurable settings through Shopify's theme editor.
+- **Shopify Commerce** — Uses Shopify's native product, cart, collection, and storefront functionality.
+
+Actual behavior depends on the implementation and configuration of the installed theme.
+
+---
 
 ## Technology Stack
 
@@ -29,7 +52,11 @@ STYLEIQ brings a modern, sophisticated aesthetic to Shopify with a focus on pers
 - CSS3
 - JavaScript
 - Shopify Theme Schema
-- Git and GitHub
+- Git
+- GitHub
+- Shopify CLI
+
+---
 
 ## Project Structure
 
@@ -44,101 +71,187 @@ styleiq-shopify-theme/
 └── templates/    # Homepage, product and collection templates
 ```
 
+The exact structure depends on the theme files included in the repository.
+
+---
+
 ## Getting Started
 
 ### Prerequisites
 
-- A Shopify store
-- Git
-- Node.js and npm
-- Shopify CLI
+Before running the theme locally, make sure you have:
 
-### Local Development
+- A Shopify store with permission to manage themes
+- Git installed
+- Node.js and npm installed
+- Shopify CLI installed
 
-Install Shopify CLI:
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/joshua14134/styleiq-shopify-theme.git
+cd styleiq-shopify-theme
+```
+
+### 2. Install Shopify CLI
 
 ```bash
 npm install -g @shopify/cli
 ```
 
-Authenticate with Shopify:
+Verify the installation:
+
+```bash
+shopify version
+```
+
+### 3. Authenticate with Shopify
 
 ```bash
 shopify auth login
 ```
 
-Navigate to the theme directory and start a development preview:
+Complete the authentication process in your browser.
+
+### 4. Start Local Development
 
 ```bash
 shopify theme dev --store your-store.myshopify.com
 ```
 
-Replace `your-store.myshopify.com` with your Shopify store domain.
+Replace `your-store.myshopify.com` with your actual Shopify store domain.
 
-### Validate the Theme
+Shopify CLI will provide a development preview URL.
 
-Run Shopify Theme Check:
+---
+
+## Theme Validation
+
+Run Shopify Theme Check to identify common Liquid, schema, and theme code issues.
 
 ```bash
 shopify theme check
 ```
 
-### Upload a Draft Theme
+Review and resolve relevant errors before deploying.
 
-Upload the theme without immediately publishing it:
+---
+
+## Deployment
+
+STYLEIQ uses Shopify for storefront hosting and GitHub for source control.
+
+### Upload an Unpublished Theme
 
 ```bash
 shopify theme push --unpublished --store your-store.myshopify.com
 ```
 
-Review the uploaded theme in Shopify before publishing it.
+Replace the example domain with your actual store domain.
+
+This uploads the theme as an unpublished theme so you can review it before publishing.
+
+### Publish the Theme
+
+1. Open Shopify Admin.
+2. Navigate to **Online Store → Themes**.
+3. Locate the uploaded STYLEIQ theme.
+4. Preview the theme and test its functionality.
+5. Select **Publish** when ready.
+
+Publishing makes the selected theme the live storefront theme.
+
+### Update the GitHub Repository
+
+After making changes to your local theme:
+
+```bash
+git add .
+git commit -m "Update STYLEIQ theme"
+git push
+```
+
+These commands save your changes to GitHub. They do not automatically upload changes to Shopify unless you have configured an integration or separately deploy the theme.
+
+---
 
 ## Customization
 
-Customize the theme through Shopify's theme editor, where supported settings are available.
+Depending on the installed theme sections and settings, you can customize:
 
-You can configure:
-
-- Logo images and logo widths
-- Navigation menus
-- Mega menu content
+- Logo image and logo width
+- Header navigation and mega menu
+- Homepage hero content
 - Featured collections
+- Product card appearance
 - Newsletter signup
 - Footer navigation
 - Social media links
-- Homepage content and imagery
+- Homepage imagery and content
 
-Available settings depend on the sections included in the installed theme.
+Use Shopify's theme editor for supported settings and edit the relevant Liquid, CSS, and JavaScript files for code-level changes.
 
-## Deployment
+---
 
-STYLEIQ is designed to run on Shopify.
+## Responsive Design
 
-GitHub is used for source control and collaboration, while Shopify hosts the storefront and provides its commerce functionality.
+STYLEIQ is designed with responsive layouts for desktop and mobile shopping.
 
-Before publishing:
+Before publishing, verify:
 
-1. Run Theme Check.
-2. Preview desktop and mobile layouts.
-3. Test product pages and shopping cart behavior.
-4. Verify navigation and newsletter signup.
-5. Publish the approved theme through Shopify.
+- Header and mobile navigation
+- Hero slider behavior
+- Product image sizing
+- Collection and product layouts
+- Shopping cart interactions
+- Newsletter form feedback
+- Footer navigation and spacing
+
+---
 
 ## Contributing
 
-1. Fork or clone the repository.
+Contributions and suggestions are welcome.
+
+1. Fork the repository.
 2. Create a feature branch.
-3. Make your changes.
+3. Implement your changes.
 4. Test the theme locally.
-5. Submit a pull request.
+5. Submit a pull request describing your changes.
+
+---
+
+## Security
+
+- Do not commit API keys, access tokens, passwords, or private customer information.
+- Review configuration files before making the repository public.
+- Avoid publishing storefront passwords in public repositories.
+- Disable storefront password protection when you are ready to make the store publicly accessible.
+
+The storefront password documented above is intended for the current preview setup and should be changed if it is no longer secure.
+
+---
 
 ## License
 
 All rights reserved unless a separate license is provided.
 
-This repository does not grant permission to redistribute or commercially reuse its code, imagery, branding, or other assets.
+This repository does not grant permission to redistribute or commercially reuse its code, branding, imagery, or other assets.
 
 ---
 
-**STYLEIQ**  
+## Project Information
+
+**Project:** STYLEIQ — Luxury Fashion Shopify Theme
+
+**Developer:** Joshua Colaco
+
+**Storefront:** https://tygx7k-kw.myshopify.com/
+
+**Source Code:** https://github.com/joshua14134/styleiq-shopify-theme
+
+---
+
+**STYLEIQ**
+
 *Less guesswork. More personal style.*
